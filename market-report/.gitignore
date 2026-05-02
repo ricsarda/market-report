@@ -1,0 +1,20 @@
+# Secrets — redundant safety net (root .gitignore is the primary guard)
+.env
+
+# Virtual environment
+.venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated output
+output/
+logs/
+.tmp/
+.pytest_cache/
+
+# OS noise
+.DS_Store
+Thumbs.db

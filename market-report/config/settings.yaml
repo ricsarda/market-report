@@ -1,0 +1,221 @@
+tickers:
+  - SPY
+  - QQQ
+  - DIA
+  - IWM
+  - AAPL
+  - MSFT
+  - NVDA
+  - AMZN
+  - GOOGL
+  - META
+  - TSM
+  - BTC-USD
+  - ETH-USD
+  - GC=F
+  - CL=F
+  - NG=F
+  - EURUSD=X
+  - GBPUSD=X
+  - USDJPY=X
+  - DX-Y.NYB
+  - ^GDAXI
+  - ^FTSE
+  - ^N225
+  - ^HSI
+  - ^STOXX50E
+
+ticker_names:
+  SPY: "SPDR S&P 500 ETF"
+  QQQ: "Invesco QQQ (Nasdaq 100)"
+  DIA: "SPDR Dow Jones ETF"
+  IWM: "iShares Russell 2000"
+  AAPL: "Apple Inc."
+  MSFT: "Microsoft Corp."
+  NVDA: "NVIDIA Corp."
+  AMZN: "Amazon.com Inc."
+  GOOGL: "Alphabet Inc."
+  META: "Meta Platforms"
+  TSM: "Taiwan Semiconductor"
+  BTC-USD: "Bitcoin / USD"
+  ETH-USD: "Ethereum / USD"
+  GC=F: "Gold Futures"
+  CL=F: "WTI Crude Oil"
+  NG=F: "Natural Gas"
+  EURUSD=X: "EUR / USD"
+  GBPUSD=X: "GBP / USD"
+  USDJPY=X: "USD / JPY"
+  DX-Y.NYB: "US Dollar Index"
+  ^GDAXI: "DAX (Germany)"
+  ^FTSE: "FTSE 100 (UK)"
+  ^N225: "Nikkei 225 (Japan)"
+  ^HSI: "Hang Seng (HK)"
+  ^STOXX50E: "Euro Stoxx 50"
+
+ticker_groups:
+  "US Equities":
+    - SPY
+    - QQQ
+    - DIA
+    - IWM
+    - AAPL
+    - MSFT
+    - NVDA
+    - AMZN
+    - GOOGL
+    - META
+  "International":
+    - TSM
+    - ^GDAXI
+    - ^FTSE
+    - ^N225
+    - ^HSI
+    - ^STOXX50E
+  "Crypto":
+    - BTC-USD
+    - ETH-USD
+  "Commodities":
+    - GC=F
+    - CL=F
+    - NG=F
+  "FX & Dollar":
+    - EURUSD=X
+    - GBPUSD=X
+    - USDJPY=X
+    - DX-Y.NYB
+
+# Sector ETFs for heatmap (Phase 2)
+sector_etfs:
+  XLK: "Technology"
+  XLF: "Financials"
+  XLE: "Energy"
+  XLY: "Cons. Discret."
+  XLP: "Cons. Staples"
+  XLV: "Health Care"
+  XLI: "Industrials"
+  XLB: "Materials"
+  XLU: "Utilities"
+  XLRE: "Real Estate"
+  XLC: "Comm. Svcs"
+
+# FRED series: id -> display name
+# Note: GDP/GDPC1/PAYEMS/UMCSENT/RSAFS update monthly or quarterly.
+# VIXCLS has a 1-trading-day lag on FRED.
+# DGS5/DGS30 added for yield curve chart.
+fred_series:
+  CPIAUCSL: "CPI All Items"
+  CPILFESL: "Core CPI (ex Food & Energy)"
+  PPIACO: "PPI All Commodities"
+  FEDFUNDS: "Fed Funds Rate"
+  DGS2: "2Y Treasury Yield"
+  DGS5: "5Y Treasury Yield"
+  DGS10: "10Y Treasury Yield"
+  DGS30: "30Y Treasury Yield"
+  T10Y2Y: "Yield Curve (10Y-2Y)"
+  SOFR: "SOFR Rate"
+  GDPC1: "Real GDP (Bil $)"
+  GDP: "GDP Nominal (Bil $)"
+  INDPRO: "Industrial Production Index"
+  RSAFS: "Retail Sales (Mil $)"
+  UNRATE: "Unemployment Rate"
+  PAYEMS: "Nonfarm Payrolls (K)"
+  CES0500000003: "Avg Hourly Earnings"
+  M2SL: "M2 Money Supply (Bil $)"
+  NFCI: "Chicago Fed Fin. Conditions"
+  DTWEXBGS: "Dollar Index (Broad, Goods)"
+  UMCSENT: "UMich Consumer Sentiment"
+  VIXCLS: "VIX (CBOE, T-1 lag)"
+  BAMLH0A0HYM2: "HY Credit Spread (OAS, bps)"
+  BAMLC0A0CM: "IG Credit Spread (OAS, bps)"
+  GPRC1: "Geopolitical Risk Index"
+
+macro_groups:
+  "Inflation":
+    - CPIAUCSL
+    - CPILFESL
+    - PPIACO
+  "Rates & Yields":
+    - FEDFUNDS
+    - DGS2
+    - DGS5
+    - DGS10
+    - DGS30
+    - T10Y2Y
+    - SOFR
+  "Growth":
+    - GDPC1
+    - GDP
+    - INDPRO
+    - RSAFS
+  "Labor":
+    - UNRATE
+    - PAYEMS
+    - CES0500000003
+  "Liquidity & FX":
+    - M2SL
+    - NFCI
+    - DTWEXBGS
+  "Sentiment":
+    - UMCSENT
+    - VIXCLS
+  "Credit & Risk":
+    - BAMLH0A0HYM2
+    - BAMLC0A0CM
+    - GPRC1
+  "Volatility":
+    - VIX_TS
+    - CBOE_SKEW
+    - CBOE_PC
+
+email:
+  recipients:
+    - richsarda@gmail.com
+  subject: "Daily Market Report — {date}"
+
+outlier_thresholds:
+  asset_daily_pct: 2.0
+  asset_premarket_pct: 1.0
+
+report:
+  output_dir: output
+  retention_days: 30
+  news_items: 8
+  timezone: America/New_York
+
+# Feature toggles — set false to disable a section/visual
+features:
+  kpi_band: true
+  charts: true          # movers bar chart + yield curve
+  sector_heatmap: true
+  watermark: false      # subtle logo watermark on page background
+  narrative: true       # LLM or rules-based market narrative
+  economic_calendar: true
+
+# Narrative / LLM config
+narrative:
+  provider: rules        # rules | anthropic | openai
+  model: claude-opus-4-7 # used only if provider = anthropic
+  openai_model: gpt-4o   # used only if provider = openai
+  max_tokens: 800
+
+# Branding / layout
+branding:
+  cover_page:
+    enabled: true
+    logo_width_in: 2.4
+    title_size: 30
+  header:
+    logo_height_in: 0.60
+    title_size: 13
+  watermark:
+    enabled: true
+    opacity: 0.05
+    width_in: 4.5
+
+# Toggle each data source independently
+data_sources:
+  fred_credit_risk: true      # BAMLH0A0HYM2, BAMLC0A0CM, GPRC1
+  cboe_vol: true              # VIX term structure, SKEW, put/call ratio
+  finnhub_earnings: true      # earnings calendar (requires valid Finnhub key)
+  yahoo_international: true   # ^GDAXI, ^FTSE, ^N225, ^HSI, ^STOXX50E
+  cftc_cot: true              # COT net positioning for SP500, Crude, Gold

@@ -1,0 +1,29 @@
+You are an expert financial market analyst writing a daily morning brief.
+Based ONLY on the data provided below — do not use external knowledge or fabricate numbers —
+write a concise 3-paragraph market narrative for {date}.
+
+Paragraph 1 — Market Overview (3-4 sentences):
+Describe overall market direction, key index performance, and breadth.
+
+Paragraph 2 — Key Drivers & Cross-Asset (3-4 sentences):
+Highlight the most important movers, macro backdrop, risk regime ({risk_label}),
+and cross-asset signals (rates, dollar, commodities, volatility).
+
+Paragraph 3 — Outlook & Watch Points (3-4 sentences):
+Based on the signals below, describe what to monitor in tomorrow's session.
+Reference specific levels or thresholds where relevant.
+
+Tone: professional, neutral, data-driven. Use exact numbers from the data provided.
+Maximum 150 words per paragraph. Separate paragraphs with a blank line.
+
+--- DATA ---
+Date: {date}
+
+Summary bullets:
+{summary}
+
+Macro context:
+{macro}
+
+Analytical insights:
+{insights}

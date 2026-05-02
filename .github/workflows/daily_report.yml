@@ -1,0 +1,58 @@
+name: Daily Market Report
+
+on:
+  schedule:
+    # 14:45 UTC = 9:45 ET (EST/UTC-5 in winter).
+    # During EDT (UTC-4, Mar–Nov) this fires at 10:45 ET — confirmed open
+    # prices are still fully available. Single cron avoids duplicate runs.
+    - cron: '45 14 * * 1-5'
+  workflow_dispatch:  # manual trigger via GitHub UI or gh CLI
+
+jobs:
+  run-report:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: market-report
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: market-report/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write .env from secrets
+        # printf avoids shell expansion issues with App Passwords that contain spaces
+        env:
+          FRED_API_KEY:         ${{ secrets.FRED_API_KEY }}
+          GMAIL_USER:           ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD:   ${{ secrets.GMAIL_APP_PASSWORD }}
+          FINNHUB_API_KEY:      ${{ secrets.FINNHUB_API_KEY }}
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY:       ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          printf 'FRED_API_KEY=%s\n'        "$FRED_API_KEY"       >> .env
+          printf 'GMAIL_USER=%s\n'          "$GMAIL_USER"         >> .env
+          printf 'GMAIL_APP_PASSWORD=%s\n'  "$GMAIL_APP_PASSWORD" >> .env
+          printf 'FINNHUB_API_KEY=%s\n'     "$FINNHUB_API_KEY"    >> .env
+          printf 'ANTHROPIC_API_KEY=%s\n'   "$ANTHROPIC_API_KEY"  >> .env
+          printf 'OPENAI_API_KEY=%s\n'      "$OPENAI_API_KEY"     >> .env
+
+      - name: Run report
+        run: python src/main.py
+
+      - name: Upload PDF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-report-${{ github.run_id }}
+          path: market-report/output/market_*.pdf
+          retention-days: 7

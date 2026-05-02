@@ -1,0 +1,27 @@
+# Secrets — never commit
+**/.env
+.env
+
+# Virtual environment
+**/.venv/
+.venv/
+
+# Python bytecode
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Generated output (PDFs, logs, cache)
+market-report/output/
+market-report/logs/
+market-report/.tmp/
+market-report/.pytest_cache/
+.pytest_cache/
+
+# Claude Code local settings
+.claude/
+
+# OS noise
+.DS_Store
+Thumbs.db
