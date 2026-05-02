@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Market Report — {{ report_date }}</title>
+<style>
+:root {
+  --navy:   #14213d;
+  --steel:  #4a6fa5;
+  --light:  #aac4e6;
+  --green:  #2e7d32;
+  --red:    #c62828;
+  --text:   #333;
+  --bg:     #fff;
+  --border: #e2e8f0;
+  --alt:    #f8fafc;
+  --grp:    #2d4a6b;
+  --font:   -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); font-size: 16px; line-height: 1.4; color: var(--text); background: var(--bg); }
+main { max-width: 760px; margin: 0 auto; padding: 0 16px 56px; }
+a { color: var(--steel); }
+code { font-family: monospace; }
+
+/* Header */
+header { background: var(--navy); color: #fff; padding: 20px 16px 16px; }
+header .inner { max-width: 760px; margin: 0 auto; }
+header h1 { font-size: clamp(18px, 4vw, 24px); font-weight: 800; letter-spacing: .04em; }
+header p  { font-size: 13px; opacity: .75; margin-top: 3px; }
+
+/* Sticky anchor nav */
+nav.anav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--steel); overflow-x: auto; white-space: nowrap;
+  scrollbar-width: none;
+}
+nav.anav::-webkit-scrollbar { display: none; }
+nav.anav a {
+  display: inline-block; padding: 9px 14px;
+  color: #fff; text-decoration: none; font-size: 13px; font-weight: 600;
+  opacity: .85; transition: opacity .15s;
+}
+nav.anav a:hover { opacity: 1; background: rgba(0,0,0,.15); }
+
+/* Sections */
+section { margin: 28px 0; }
+h2.sec {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--navy);
+  border-bottom: 2px solid var(--steel); padding-bottom: 5px; margin-bottom: 14px;
+}
+
+/* KPI band */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (min-width: 600px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+.kpi-card {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 10px; text-align: center; background: #fafbfc;
+}
+.kpi-card .lbl { font-size: 11px; color: #666; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.kpi-card .val { font-size: 22px; font-weight: 800; }
+
+/* Mood box */
+.mood-box {
+  background: #f0f6ff; border: 1px solid var(--light); border-radius: 8px;
+  padding: 12px 16px; margin-top: 10px; font-size: 14px; line-height: 1.6;
+}
+
+/* Bullet list */
+.blist { list-style: none; padding: 0; margin-top: 12px; }
+.blist li {
+  padding: 6px 0 6px 20px; position: relative;
+  font-size: 14px; border-bottom: 1px solid var(--border);
+}
+.blist li:last-child { border-bottom: none; }
+.blist li::before { content: '→'; position: absolute; left: 0; color: var(--steel); font-weight: 700; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table th {
+  background: var(--navy); color: #fff;
+  padding: 7px 8px; text-align: left; white-space: nowrap; font-size: 11px; letter-spacing: .03em;
+}
+table th.r, table td.r { text-align: right; }
+table td { padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table tbody tr:nth-child(even) td { background: var(--alt); }
+table tbody tr.grp td {
+  background: var(--grp); color: #fff; font-weight: 700;
+  font-size: 11px; letter-spacing: .04em; padding: 4px 8px;
+}
+
+/* Color classes */
+.pos { color: var(--green); font-weight: 600; }
+.neg { color: var(--red);   font-weight: 600; }
+.neu { color: #999; }
+
+/* SVG charts */
+.chart { overflow-x: auto; margin: 6px 0 2px; }
+.chart svg { width: 100%; height: auto; max-width: 100%; }
+
+/* Narrative */
+.narr-box {
+  background: #f0f9ff; border: 1px solid var(--steel); border-radius: 8px;
+  padding: 16px; font-size: 14px; line-height: 1.65;
+}
+.narr-box p + p { margin-top: 10px; }
+.narr-lbl { font-size: 11px; color: #999; font-style: italic; margin-bottom: 8px; }
+
+/* Footnote */
+.fn { font-size: 11px; color: #999; font-style: italic; margin-top: 7px; }
+
+/* Footer */
+footer {
+  margin-top: 48px; padding: 20px 16px;
+  border-top: 1px solid var(--border); font-size: 12px; color: #999; text-align: center;
+}
+footer a { color: var(--steel); }
+
+/* Mobile card layout for tables */
+@media (max-width: 600px) {
+  .rt thead { display: none; }
+  .rt tbody tr:not(.grp) {
+    display: block; margin: 0 0 10px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .rt tbody tr.grp { display: table-row; }
+  .rt tbody tr.grp td { display: table-cell; }
+  .rt td:not(.grp td) {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px;
+    text-align: right;
+  }
+  .rt td:not(.grp td):last-child { border-bottom: none; }
+  .rt td:not(.grp td)::before {
+    content: attr(data-label); font-weight: 600; color: var(--navy);
+    margin-right: 10px; flex-shrink: 0; text-align: left;
+  }
+  .rt tbody tr:nth-child(even) td { background: var(--bg); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1>DAILY MARKET REPORT</h1>
+    <p>{{ report_date }} &middot; Post-Open Edition &middot; Automated Market Intelligence</p>
+  </div>
+</header>
+
+<nav class="anav">
+  <a href="#mood">Mood</a>
+  <a href="#prices">Prices</a>
+  <a href="#macro">Macro</a>
+  {% if features.get('sector_heatmap', True) and sector_svg %}<a href="#sectors">Sectors</a>{% endif %}
+  {% if yield_svg %}<a href="#yields">Yield Curve</a>{% endif %}
+  {% if features.get('narrative', True) and narrative %}<a href="#narrative">Narrative</a>{% endif %}
+  {% if earnings %}<a href="#earnings">Earnings</a>{% endif %}
+  {% if cot %}<a href="#cot">COT</a>{% endif %}
+  {% if features.get('economic_calendar', True) and calendar %}<a href="#calendar">Calendar</a>{% endif %}
+  {% if news %}<a href="#news">News</a>{% endif %}
+</nav>
+
+<main>
+
+{# ── MOOD ────────────────────────────────────────────────────── #}
+<section id="mood">
+  <h2 class="sec">At a Glance</h2>
+  <div class="kpi-grid">
+    {% for kpi in kpis %}
+    <div class="kpi-card">
+      <div class="lbl">{{ kpi.label }}</div>
+      <div class="val {{ kpi.cls }}">{{ kpi.value }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="mood-box">
+    <strong class="{{ risk_cls }}">{{ risk_label }} Risk Regime</strong>
+    &nbsp;&middot;&nbsp; composite score <strong>{{ risk_score }}</strong>
+    {% if breadth_str %}&nbsp;&middot;&nbsp; {{ breadth_str }}{% endif %}
+  </div>
+  {% if summary %}
+  <ul class="blist">
+    {% for b in summary %}<li>{{ b }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+{# ── ASSET PRICES ─────────────────────────────────────────────── #}
+<section id="prices">
+  <h2 class="sec">Asset Prices &amp; Performance</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead>
+      <tr>
+        <th>Ticker</th>
+        <th>Name</th>
+        <th class="r">Prev Close</th>
+        <th class="r">Daily&nbsp;Δ%</th>
+        {% if has_open %}
+        <th class="r">Open</th>
+        <th class="r">Open&nbsp;Δ%</th>
+        {% endif %}
+        <th class="r">1M&nbsp;Δ%</th>
+        <th class="r">1Y&nbsp;Δ%</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for grp in price_groups %}
+      <tr class="grp">
+        <td colspan="{{ 8 if has_open else 6 }}" style="background:{{ grp.color }}">
+          &#x25CF; {{ grp.name | upper }}
+        </td>
+      </tr>
+      {% for row in grp.rows %}
+      <tr>
+        <td data-label="Ticker"><strong>{{ row.ticker }}</strong></td>
+        <td data-label="Name">{{ row.name }}</td>
+        <td data-label="Prev Close" class="r">{{ row.prev_close }}</td>
+        <td data-label="Daily Δ%" class="r {{ row.daily_cls }}">{{ row.daily_pct }}</td>
+        {% if has_open %}
+        <td data-label="Open" class="r">{{ row.open_price }}</td>
+        <td data-label="Open Δ%" class="r {{ row.open_cls }}">{{ row.open_pct }}</td>
+        {% endif %}
+        <td data-label="1M Δ%" class="r {{ row.monthly_cls }}">{{ row.monthly_pct }}</td>
+        <td data-label="1Y Δ%" class="r {{ row.yearly_cls }}">{{ row.yearly_pct }}</td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% if has_open %}
+  <p class="fn">OPEN = session opening price at 9:30 AM ET &middot; Dash (—) means opening data not yet available</p>
+  {% endif %}
+</section>
+
+{# ── TOP MOVERS CHART ─────────────────────────────────────────── #}
+{% if features.get('charts', True) and movers_svg %}
+<section id="movers">
+  <h2 class="sec">Top 10 Daily Movers</h2>
+  <div class="chart">{{ movers_svg | safe }}</div>
+</section>
+{% endif %}
+
+{# ── MACRO ────────────────────────────────────────────────────── #}
+<section id="macro">
+  <h2 class="sec">Macro Indicators (Federal Reserve / FRED)</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead>
+      <tr>
+        <th>Indicator</th>
+        <th>Series</th>
+        <th class="r">Value</th>
+        <th class="r">As Of</th>
+        <th class="r">Freq</th>
+        <th class="r">1M&nbsp;Δ%</th>
+        <th class="r">1Y&nbsp;Δ%</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for grp in macro_groups_data %}
+      <tr class="grp">
+        <td colspan="7" style="background:{{ grp.color }}">&#x25CF; {{ grp.name | upper }}</td>
+      </tr>
+      {% for row in grp.rows %}
+      <tr>
+        <td data-label="Indicator">{{ row.name }}</td>
+        <td data-label="Series"><code style="font-size:11px;color:#888">{{ row.series_id }}</code></td>
+        <td data-label="Value" class="r">{{ row.value_fmt }}</td>
+        <td data-label="As Of" class="r" style="font-size:11px;color:#888">{{ row.as_of }}</td>
+        <td data-label="Freq" class="r" style="font-size:11px;color:#888">{{ row.frequency }}</td>
+        <td data-label="1M Δ%" class="r {{ row.month_cls }}">{{ row.month_pct }}</td>
+        <td data-label="1Y Δ%" class="r {{ row.year_cls }}">{{ row.year_pct }}</td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="fn">D=Daily &middot; M=Monthly &middot; Q=Quarterly &middot; Δ% vs prior available reading of same series</p>
+</section>
+
+{# ── SECTOR HEATMAP ───────────────────────────────────────────── #}
+{% if features.get('sector_heatmap', True) and sector_svg %}
+<section id="sectors">
+  <h2 class="sec">Sector Performance (ETFs)</h2>
+  <div class="chart">{{ sector_svg | safe }}</div>
+</section>
+{% endif %}
+
+{# ── YIELD CURVE ──────────────────────────────────────────────── #}
+{% if yield_svg %}
+<section id="yields">
+  <h2 class="sec">Yield Curve</h2>
+  <div class="chart" style="max-width:420px">{{ yield_svg | safe }}</div>
+</section>
+{% endif %}
+
+{# ── NARRATIVE ────────────────────────────────────────────────── #}
+{% if features.get('narrative', True) and narrative %}
+<section id="narrative">
+  <h2 class="sec">Market Narrative</h2>
+  {% if narrative_provider != 'rules' %}
+  <p class="narr-lbl">[AI-Assisted Narrative]</p>
+  {% endif %}
+  <div class="narr-box">
+    {% for p in narrative %}<p>{{ p }}</p>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ── EARNINGS ─────────────────────────────────────────────────── #}
+{% if earnings %}
+<section id="earnings">
+  <h2 class="sec">Earnings Calendar</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead>
+      <tr>
+        <th>Ticker</th><th>Company</th><th>When</th><th>Day</th>
+        <th class="r">EPS Est</th><th class="r">EPS Act</th><th class="r">Rev Est (M)</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for row in earnings %}
+    <tr>
+      <td data-label="Ticker"><strong>{{ row.ticker }}</strong></td>
+      <td data-label="Company">{{ row.company }}</td>
+      <td data-label="When">{{ row.when }}</td>
+      <td data-label="Day">{{ row.day_label }}</td>
+      <td data-label="EPS Est" class="r">{{ row.eps_estimate if row.eps_estimate is not none else '—' }}</td>
+      <td data-label="EPS Act" class="r">{{ row.eps_actual   if row.eps_actual   is not none else '—' }}</td>
+      <td data-label="Rev Est" class="r">{{ row.rev_estimate if row.rev_estimate is not none else '—' }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+{# ── COT ──────────────────────────────────────────────────────── #}
+{% if cot %}
+<section id="cot">
+  <h2 class="sec">CFTC COT — Net Non-Commercial Positioning</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th class="r">Net (Contracts)</th>
+        <th class="r">Longs</th>
+        <th class="r">Shorts</th>
+        <th class="r">As Of</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for row in cot %}
+    {% set net_cls = 'pos' if row.net >= 0 else 'neg' %}
+    <tr>
+      <td data-label="Market"><strong>{{ row.label }}</strong></td>
+      <td data-label="Net" class="r {{ net_cls }}">{{ '+' if row.net >= 0 else '' }}{{ '{:,}'.format(row.net) }}</td>
+      <td data-label="Longs"  class="r">{{ '{:,}'.format(row.longs) }}</td>
+      <td data-label="Shorts" class="r">{{ '{:,}'.format(row.shorts) }}</td>
+      <td data-label="As Of"  class="r" style="font-size:11px;color:#888">{{ row.as_of }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="fn">Net = non-commercial longs − shorts &middot; Positive = net long (risk-on bias) &middot; Source: CFTC Legacy Futures Only</p>
+</section>
+{% endif %}
+
+{# ── ECONOMIC CALENDAR ────────────────────────────────────────── #}
+{% if features.get('economic_calendar', True) and calendar %}
+<section id="calendar">
+  <h2 class="sec">Economic Calendar — Today</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead><tr><th>Release</th><th class="r">Date</th></tr></thead>
+    <tbody>
+    {% for ev in calendar %}
+    <tr>
+      <td data-label="Release">{{ ev.name }}</td>
+      <td data-label="Date" class="r" style="color:#888;font-size:12px">{{ ev.date }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+{# ── NEWS ─────────────────────────────────────────────────────── #}
+{% if news %}
+<section id="news">
+  <h2 class="sec">Top Market News</h2>
+  <div class="tbl-wrap">
+  <table class="rt">
+    <thead>
+      <tr><th>Headline</th><th>Source</th><th>When</th><th>Category</th></tr>
+    </thead>
+    <tbody>
+    {% for item in news %}
+    <tr>
+      <td data-label="Headline">
+        {% if item.url %}
+          <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.headline }}</a>
+        {% else %}
+          {{ item.headline }}
+        {% endif %}
+      </td>
+      <td data-label="Source" style="color:#888;font-size:12px;white-space:nowrap">{{ item.source }}</td>
+      <td data-label="When"   style="color:#888;font-size:12px;white-space:nowrap">{{ item.timestamp }}</td>
+      <td data-label="Cat"    style="color:var(--steel);font-size:12px">{{ item.impact }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+{# ── SIGNALS ──────────────────────────────────────────────────── #}
+{% if signals %}
+<section id="signals">
+  <h2 class="sec">Signals to Watch Tomorrow</h2>
+  <ul class="blist">
+    {% for s in signals %}<li>{{ s }}</li>{% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+</main>
+
+<footer>
+  <p>
+    Generated {{ generated_at }} &middot;
+    <a href="{{ pages_url }}">Archive</a> &middot;
+    For informational purposes only. Not financial advice.
+  </p>
+</footer>
+
+</body>
+</html>

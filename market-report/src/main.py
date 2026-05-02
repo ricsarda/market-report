@@ -27,6 +27,8 @@ from insights       import compute_insights
 from macro_fetch    import fetch_macro
 from narrative      import generate_narrative
 from news_fetch     import fetch_news
+from archive_publisher import publish as publish_archive
+from html_builder   import build_html
 from pdf_builder    import build_pdf
 
 OUTPUT_DIR = ROOT / 'output'
@@ -366,6 +368,42 @@ def main():
     )
     log.info(f"PDF ready: {pdf_path}")
 
+    # ── Build HTML ─────────────────────────────────────────────────
+    html_name = f"market_{report_date}.html"
+    html_path = str(OUTPUT_DIR / html_name)
+    html_body = None
+    try:
+        html_body = build_html(
+            report_date          = report_date,
+            prices_data          = prices,
+            macro_data           = macro,
+            news_data            = news,
+            summary_bullets      = summary,
+            signals              = signals,
+            close_df             = close_df,
+            ticker_groups        = cfg.get('ticker_groups'),
+            macro_groups         = cfg.get('macro_groups'),
+            sector_data          = sector_data,
+            narrative_paragraphs = narrative_paragraphs,
+            narrative_provider   = narr_cfg.get('provider', 'rules'),
+            calendar             = calendar,
+            features             = features,
+            insights             = insights,
+            earnings_data        = earnings_data,
+            cot_data             = cot_data,
+            out_path             = html_path,
+        )
+        log.info(f"HTML ready: {html_path}")
+    except Exception as e:
+        log.warning(f"HTML build failed: {e}")
+
+    # ── Publish to GitHub Pages archive ───────────────────────────
+    if html_body:
+        try:
+            publish_archive(html_path, report_date)
+        except Exception as e:
+            log.warning(f"Archive publish failed: {e}")
+
     # ── Email ──────────────────────────────────────────────────────
     if gmail_user and gmail_pass:
         email_cfg  = cfg.get('email', {})
@@ -379,7 +417,8 @@ def main():
             "Generated automatically by the Market Intelligence System."
         )
         _retry(
-            lambda: send_email(gmail_user, gmail_pass, recipients, subject, body, pdf_path),
+            lambda: send_email(gmail_user, gmail_pass, recipients, subject, body,
+                               pdf_path, html_body=html_body),
             'emailer',
         )
     else:

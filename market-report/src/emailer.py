@@ -21,12 +21,22 @@ def send_email(
     subject: str,
     body: str,
     attachment_path: str = None,
+    html_body: str = None,
 ) -> None:
-    msg = MIMEMultipart()
+    # Outer envelope: multipart/mixed so we can attach the PDF
+    msg = MIMEMultipart('mixed')
     msg['From']    = sender
     msg['To']      = ', '.join(recipients)
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain', 'utf-8'))
+
+    if html_body:
+        # Wrap text + HTML alternatives together, then attach PDF alongside
+        alt = MIMEMultipart('alternative')
+        alt.attach(MIMEText(body,      'plain', 'utf-8'))
+        alt.attach(MIMEText(html_body, 'html',  'utf-8'))
+        msg.attach(alt)
+    else:
+        msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
     if attachment_path and Path(attachment_path).exists():
         with open(attachment_path, 'rb') as f:
