@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Market Report Archive</title>
+<style>
+  :root {
+    --bg:      #f8fafc;
+    --card:    #ffffff;
+    --border:  #e2e8f0;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --accent:  #2563eb;
+    --radius:  8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+
+  header {
+    background: #0f172a;
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+  header p  { font-size: 0.78rem; color: #94a3b8; margin-top: .15rem; }
+
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+
+  h2.month-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2rem 0 .75rem;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h2.month-heading:first-child { margin-top: 0; }
+
+  ul.day-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+
+  ul.day-list li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .65rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  ul.day-list li a:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+  }
+
+  .day-label { font-size: .9rem; font-weight: 600; }
+  .day-badge {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .2rem .55rem;
+    border-radius: 99px;
+    background: var(--accent);
+    color: #fff;
+  }
+  .day-badge.latest { background: #16a34a; }
+
+  footer {
+    text-align: center;
+    font-size: .7rem;
+    color: var(--muted);
+    padding: 2.5rem 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Daily Market Report</h1>
+    <p>Archive — last 1 reports</p>
+  </div>
+</header>
+
+<main>
+
+
+  <h2 class="month-heading">May 2026</h2>
+  <ul class="day-list">
+  
+    <li>
+      <a href="https://ricsarda.github.io/market-report/2026/05/04.html">
+        <span class="day-label">Monday, May 4, 2026</span>
+        
+          <span class="day-badge latest">Latest</span>
+          
+        
+      </a>
+    </li>
+  
+  </ul>
+
+</main>
+
+<footer>
+  Updated 2026-05-04 15:28 UTC &mdash; <a href="https://ricsarda.github.io/market-report" style="color:var(--accent)">ricsarda.github.io/market-report</a>
+</footer>
+</body>
+</html>
