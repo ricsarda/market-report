@@ -2,10 +2,9 @@ name: Daily Market Report
 
 on:
   schedule:
-    # 14:45 UTC = 9:45 ET (EST/UTC-5 in winter).
-    # During EDT (UTC-4, Mar–Nov) this fires at 10:45 ET — confirmed open
-    # prices are still fully available. Single cron avoids duplicate runs.
-    - cron: '45 14 * * 1-5'
+    - cron: '45 13 * * 1-5'   # 9:45 ET during EDT (summer, UTC-4)
+    - cron: '45 14 * * 1-5'   # 9:45 ET during EST (winter, UTC-5)
+    # main.py time-window guard prevents double-runs during DST transition weeks
   workflow_dispatch:  # manual trigger via GitHub UI or gh CLI
 
 permissions:

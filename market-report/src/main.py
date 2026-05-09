@@ -236,6 +236,12 @@ def main():
         log.info("Not a NYSE trading day — exiting.")
         sys.exit(0)
 
+    now_et = datetime.now(ET)
+    h, m = now_et.hour, now_et.minute
+    if h < 9 or (h == 9 and m < 40) or h > 10 or (h == 10 and m > 5):
+        log.info(f"Outside NYSE opening window ({now_et.strftime('%H:%M')} ET) — skipping.")
+        sys.exit(0)
+
     cfg = load_config()
     OUTPUT_DIR.mkdir(exist_ok=True)
     (ROOT / '.tmp').mkdir(exist_ok=True)
